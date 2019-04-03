@@ -8,10 +8,52 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Trade@CU</title>
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    <h1 class="text-center">Trade@CU</h1>
+    <div class="container border">
+        <form>
+            <div class="form-group">
+                <label for="class_lookup">Class ticket</label>
+                <input type="text" class="form-control" id="class_lookup"  placeholder="Look up a class">
+            </div>
+        </form>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <button type="button" class="btn btn-primary">BUY</button>
+            </div>
+            <input type="text" class="form-control" placeholder="Price">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">BID</button>
+                <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">ASK</button>
+                <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">LAST</button>
+                <button type="button" class="btn btn-success">EXECUTE</button>
+            </div>
+        </div>
+    </div>
+    <div class="container border">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 15%">TICKER</th>
+                    <th >CLASS</th>
+                    <th style="width: 10%">BID</th>
+                    <th style="width: 10%">ASK</th>
+                    <th style="width: 10%">LAST</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">COMSW4111-007</th>
+                    <th>Introduction to Databases, Prof.Doof, MW 2:40</th>
+                    <th>2</th>
+                    <th>1</th>
+                    <th>1</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
