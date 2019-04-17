@@ -1,0 +1,15 @@
+one class has many spots
+each spot has only one class
+
+many students have many spots in classes
+each spot can only be held by one student
+
+students buy/sell spots for class
+(do spots know if they belong to a student)
+
+one order can have many spots
+each spot can only be in one order
+
+the order manager has many orders
+all orders are sent ot the order manager for aggregation
+(long term planning, also for order matching)

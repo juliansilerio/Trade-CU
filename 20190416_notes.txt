@@ -1,0 +1,6 @@
+1. building a web application is hard
+    * use flask with bootstrap to handle this
+    * SQLAlchemy for database mangaement
+    * focus on local development, cloud development can come later
+2. building a real-time web application is really hard
+    * use pusher to handle real time component
