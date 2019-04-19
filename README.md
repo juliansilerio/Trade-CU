@@ -1,5 +1,4 @@
-# Flask Starter Project
-Basic template for a Flask web site.
+# Trade @ CU
 
 ## Usage
 - Prepare your environment by executing the requirements.txt file, e.g. `pip install -r requirements.txt`
