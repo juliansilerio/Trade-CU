@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models import db
 
+
 ORDERS = [
     {
         'side' : 'B',
@@ -64,6 +65,14 @@ def all_orders():
     else:
         response_object['orders'] = ORDERS
     return jsonify(response_object)
+
+@app.route('/users', methods=['GET'])
+def all_users():
+    from models import User
+    users = ''
+    for user in User.query.all():
+        users += '<p>{}</p>'.format(user.uni)
+    return '%s' % users
 
 if __name__ == '__main__':
     app.run()
