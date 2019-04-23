@@ -37,9 +37,11 @@
             </thead>
             <tbody>
                 <tr v-for="(order, index) in orders" :key="index">
-                    <td>
-                        <span v-if="order.side=='B'" class="bg-info">BUY</span>
-                        <span v-else class="bg-warning">SELL</span>
+                    <td v-if="order.side=='B'" class="bg-info">
+                        <h6 class="text-center">BUY</h6>
+                    </td>
+                    <td v-else class="bg-warning">
+                        <h6 class="text-center">SELL</h6>
                     </td>
                     <td>{{ order.ticker }}</td>
                     <td>{{ order.class }}</td>

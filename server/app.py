@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from models import db
 
 ORDERS = [
     {
@@ -37,7 +38,9 @@ app.config.from_object(__name__)
 
 # enable CORS
 CORS(app)
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+db.app=app
+db.init_app(app)
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
