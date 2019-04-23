@@ -1,9 +1,9 @@
 <template>
 <div class="container">
     <h1 class="text-center">Trade@CU</h1>
-    <div class="container">
     <button type="button" class="btn btn-success btn-sm" v-b-modal.order-modal>New Order</button>
-        <!--form>
+    <!--div class="container">
+        <form>
             <div class="form-group">
                 <label for="class_lookup">Class ticket</label>
                 <input type="text" class="form-control" id="class_lookup"  placeholder="Look up a class">
@@ -20,13 +20,13 @@
                 <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">LAST</button>
                 <button type="button" class="btn btn-success">EXECUTE</button>
             </div>
-        </div-->
-    </div>
-    <div class="container border">
+        </div>
+    </div-->
+    <div class="container border mt-2">
         <table class="table">
             <thead>
                 <tr>
-                    <th style="width: 10%">SIDE</th>
+                    <th style="width: 5%">SIDE</th>
                     <th style="width: 20%">TICKER</th>
                     <th>CLASS</th>
                     <th style="width: 10%">TIME</th>
