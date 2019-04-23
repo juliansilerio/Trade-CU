@@ -35,13 +35,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>SELL</td>
-                    <td scope="row">COMSW4111-007</td>
-                    <td>Introduction to Databases</td>
-                    <td>MW 2:40</td>
-                    <td>Prof.Doof</td>
-                    <td>1</td>
+                <tr v-for="(order, index) in orders" :key="index">
+                    <td>
+                        <span v-if="order.side=='B'" class="bg-info">BUY</span>
+                        <span v-else class="bg-warning">SELL</span>
+                    </td>
+                    <td>{{ order.ticker }}</td>
+                    <td>{{ order.class }}</td>
+                    <td>{{ order.time }}</td>
+                    <td>{{ order.professor }}</td>
+                    <td>{{ order.price }}</td>
                     <td>
                         <button type="button" class="btn btn-success btn-sm">EXECUTE</button>
                     </td>
@@ -51,3 +54,31 @@
     </div>
 </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      orders: [],
+    };
+  },
+  methods: {
+    getOrders() {
+      const path = 'http://localhost:5000/orders';
+      axios.get(path)
+        .then((res) => {
+          this.orders = res.data.orders;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+  },
+  created() {
+    this.getOrders();
+  },
+};
+</script>

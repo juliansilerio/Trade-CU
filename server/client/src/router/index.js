@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
+//import HelloWorld from '@/components/HelloWorld';
 import Ping from '@/components/Ping';
-import Orders from '@/components/Orders'
+import Orders from '@/components/Orders';
 
 Vue.use(Router);
 
