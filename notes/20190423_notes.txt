@@ -1,0 +1,17 @@
+DONE:
+    front-end mostly
+    dynamic updates to table
+    load objects from python to js table
+    integrate python fuctions with js table
+    learn vue :D
+
+IN-PROGRESS:
+    set up database
+        users
+        courses
+        seats in courses
+
+TO-DO:
+    integrate database with front-end
+    add more user specific dialogue
+    authentication and stuff
