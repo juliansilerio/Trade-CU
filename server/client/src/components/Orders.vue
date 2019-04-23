@@ -1,8 +1,9 @@
 <template>
 <div class="container">
     <h1 class="text-center">Trade@CU</h1>
-    <div class="container border">
-        <form>
+    <div class="container">
+    <button type="button" class="btn btn-success btn-sm" v-b-modal.order-modal>New Order</button>
+        <!--form>
             <div class="form-group">
                 <label for="class_lookup">Class ticket</label>
                 <input type="text" class="form-control" id="class_lookup"  placeholder="Look up a class">
@@ -19,7 +20,7 @@
                 <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">LAST</button>
                 <button type="button" class="btn btn-success">EXECUTE</button>
             </div>
-        </div>
+        </div-->
     </div>
     <div class="container border">
         <table class="table">
@@ -52,6 +53,35 @@
             </tbody>
         </table>
     </div>
+    <b-modal ref="addOrderModal"
+             id="order-modal"
+             title="Add a new order"
+             hide-footer>
+      <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+      <b-form-group id="form-class-group"
+                    label="Class:"
+                    label-for="form-class-input">
+          <b-form-input id="form-class-input"
+                        type="text"
+                        v-model="addOrderForm.class"
+                        required
+                        placeholder="Enter class">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-professor-group"
+                      label="Professor:"
+                      label-for="form-professor-input">
+            <b-form-input id="form-professor-input"
+                          type="text"
+                          v-model="addOrderForm.professor"
+                          required
+                          placeholder="Enter professor">
+            </b-form-input>
+          </b-form-group>
+        <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
+      </b-form>
+    </b-modal>
 </div>
 </template>
 
@@ -62,6 +92,10 @@ export default {
   data() {
     return {
       orders: [],
+      addOrderForm : {
+          class : '',
+          professor : '',
+      },
     };
   },
   methods: {
@@ -75,6 +109,37 @@ export default {
           // eslint-disable-next-line
           console.error(error);
         });
+    },
+    addOrder(payload) {
+      const path = 'http://localhost:5000/orders';
+      axios.post(path, payload)
+        .then(() => {
+          this.getOrders();
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error);
+          this.getOrders();
+        });
+    },
+    initForm() {
+      this.addOrderForm.class = '';
+      this.addOrderForm.professor = '';
+    },
+    onSubmit(evt) {
+      evt.preventDefault();
+      this.$refs.addOrderModal.hide();
+      const payload = {
+        class: this.addOrderForm.class,
+        professor: this.addOrderForm.professor,
+      };
+      this.addOrder(payload);
+      this.initForm();
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      this.$refs.addOrderModal.hide();
+      this.initForm();
     },
   },
   created() {
