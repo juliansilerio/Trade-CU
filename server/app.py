@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models import db
-
+import generate_entities as ge
 
 ORDERS = [
     {
@@ -121,3 +121,4 @@ def delete_course():
 
 if __name__ == '__main__':
     app.run()
+    ge.main()

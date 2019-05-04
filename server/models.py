@@ -33,6 +33,14 @@ class Course(db.Model):
     def __repr__(self):
         return '<Course {}{}-{} {}>'.format(self.dept_short, self.number, str(self.section).zfill(3), self.title)
 
+    # def __init__(**kwargs):
+    #     super(Course, self).__init__(**kwargs)
+    #     for i in range(seat_count):
+    #         s = Seat(course=self)
+    #         db.session.add(s)
+    #     db.session.commit()
+    #     return 0
+
 class Seat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.call'), nullable=False)
@@ -41,7 +49,7 @@ class Seat(db.Model):
     student = db.relationship('User', backref=db.backref('classes', lazy=True))
 
     def __repr__(self):
-        return course
+        return str(self.course)
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
