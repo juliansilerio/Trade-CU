@@ -3,9 +3,9 @@
         <h1><Login</h1>
         <input type="text" name="username" v-model="input.username" placeholder="Username" />
         <button class="btn btn-info" type="button" v-on:click="login()">Login</button>
-        <p v-if="bad_login" id="warning">
+        <!--p v-if="bad_login" id="warning">
             That didn't work, please try again.
-        </p>
+        </p-->
     </div>
 </template>
 
@@ -32,6 +32,7 @@ export default {
                     .then(response => {
                         if (response.data.authenticated) {
                             this.$emit("authenticated", true);
+                            this.$emit("user", response.data.user);
                             this.$router.replace({ name: "secure"});
                         } else {
                             console.log("Username not found");

@@ -1,8 +1,14 @@
 <template>
   <div class="container" id="app">
-    <div id="nav">
-        <router-link class="btn btn-danger float-right" v-if="authenticated" to="/login" v-on:click.native="logout()" replace>Logout</router-link>
-    </div>
+    <b-navbar id="nav" toggleable="lg" type="dark" variant="info">
+        <b-navbar-nav>
+        <b-nav-item-dropdown v-if="authenticated" right>
+          <!-- Using 'button-content' slot -->
+          <template slot="button-content"><em>{{ this.user.uni }}</em></template>
+          <b-dropdown-item to="/login" v-on:click.native="logout()" replace>Sign Out</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-navbar>
     <router-view @authenticated="setAuthenticated" />
   </div>
 </template>
@@ -13,6 +19,7 @@ export default {
   data() {
     return {
       authentiated: false,
+      user: {},
     }
   },
   mounted() {

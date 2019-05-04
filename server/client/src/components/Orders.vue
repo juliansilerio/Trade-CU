@@ -84,6 +84,8 @@
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
     </b-modal>
+
+    <router-view @user="getUser" />
 </div>
 </template>
 
@@ -97,6 +99,10 @@ export default {
       addOrderForm : {
           class : '',
           professor : '',
+      },
+      user: {
+        uni : '',
+        credits : 0,
       },
     };
   },
@@ -143,8 +149,25 @@ export default {
       this.$refs.addOrderModal.hide();
       this.initForm();
     },
+    getUser() {
+      const path = "http://localhost:5000/user";
+      const payload = { user: "jjs2245" };
+      console.log(payload)
+      axios.post(path, payload)
+      .then((res) => {
+        //console.log(res.data.user);
+        this.user = res.data.user;
+        //console.log(this.user.credits);
+      })
+      .catch((error) => {
+        // eslint-disable-next-line
+        console.error(error);
+      });
+    },
   },
   created() {
+    //console.log(this.user);
+    this.getUser();
     this.getOrders();
   },
 };

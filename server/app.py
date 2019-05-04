@@ -33,14 +33,6 @@ def all_orders():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
-        ORDERS.append({
-            'side' : post_data.get('side'),
-            'ticker' : post_data.get('ticker'),
-            'class' : post_data.get('class'),
-            'time' : post_data.get('time'),
-            'professor' : post_data.get('professor'),
-            'price' : post_data.get('price'),
-        })
         response_object['message'] = 'Order created'
     else:
         orders = Order.query.all()
@@ -72,6 +64,25 @@ def login():
     user = User.query.get(post_data.get('username'))
     if user != None:
         response_object['authenticated'] = 'true'
+        this_user = {
+            'uni': user.uni,
+            'credits' : user.credits
+        }
+        response_object['user'] = this_user
+    return jsonify(response_object)
+
+@app.route('/user', methods=['GET', 'POST'])
+def user():
+    response_object = { 'status' : 'success' }
+    post_data = request.get_json()
+    print(post_data)
+    user = User.query.get(post_data.get('user'))
+    USER_res = {
+        'uni': user.uni,
+        'credits' : user.credits
+    }
+    response_object['user'] = USER_res
+    print(USER_res)
     return jsonify(response_object)
 
 '''
