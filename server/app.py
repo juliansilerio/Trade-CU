@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_login import LoginManager
-from models import db, Order, User, Course
+from models import db, Order, User, Course, Seat
 import generate_entities as ge
 
 # configuration
@@ -46,10 +46,16 @@ def all_orders():
         post_data = request.get_json()
         course = Course.query.get(post_data.get('course'))
         student = User.query.get(post_data.get('user'))
-        order = Order(course=course, student=student, price=post_data.get('price'), side=post_data.get('side'))
-        db.session.add(order)
-        db.session.commit()
-        response_object['message'] = 'Order created'
+        side=post_data.get('side')
+        if (side == 'SELL' and Seat.query.filter_by(student=student,course=course).first()) or side == 'BUY':
+            order = Order(course=course, student=student, price=post_data.get('price'), side=side)
+            db.session.add(order)
+            db.session.commit()
+            response_object['message'] = 'Order created'
+        else:
+            response_object['message'] = 'Invalid order, no position in course'
+
+        print(response_object['message'])
     else:
         orders = Order.query.all()
         ORDERS=[]
@@ -60,7 +66,8 @@ def all_orders():
                 'class' : str(o.course.title),
                 'time' : str(o.course.day) + " " +  str(o.course.time),
                 'professor' : o.course.faculty,
-                'price' : o.price
+                'price' : o.price,
+                'id' : o.id,
             })
         response_object['orders'] = ORDERS
     return jsonify(response_object)
@@ -72,6 +79,36 @@ def all_users():
     for user in User.query.all():
         users += '<p>{}</p>'.format(user.uni)
     return '%s' % users
+
+@app.route('/execute', methods=['PUT'])
+def execute():
+    response_object = {'status': 'success'}
+    response_object['message'] = 'Order failed to execute'
+    put_data = request.get_json()
+    o = Order.query.get(put_data.get('order'))
+    user = User.query.get(put_data.get('user')['uni'])
+
+    seller = o.student
+    buyer = user # you're executing the buy order
+    if o.side == 'SELL':
+        seller = user #you're executing the sell order
+        buyer = o.student
+
+    seat = Seat.query.filter_by(student=seller,course=o.course).first()
+    if seat and buyer.credits >= o.price:
+        buyer.credits -= o.price
+        seller.credits += o.price
+        seat.student = buyer
+
+        Order.query.filter_by(id=put_data.get('order')).delete()
+        db.session.add(buyer)
+        db.session.add(seller)
+        db.session.add(seat)
+        db.session.commit()
+        response_object['message'] = 'Order executed'
+
+    return jsonify(response_object)
+
 
 @app.route('/check_user', methods=['POST'])
 def login():

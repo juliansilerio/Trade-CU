@@ -2,26 +2,6 @@
 <div class="container">
     <h1 class="text-center">Trade@CU</h1>
     <button type="button" class="btn btn-success btn-sm" v-b-modal.order-modal>New Order</button>
-    <!--div class="container">
-        <form>
-            <div class="form-group">
-                <label for="class_lookup">Class ticket</label>
-                <input type="text" class="form-control" id="class_lookup"  placeholder="Look up a class">
-            </div>
-        </form>
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <button type="button" class="btn btn-primary">BUY</button>
-            </div>
-            <input type="text" class="form-control" placeholder="Price">
-            <div class="input-group-append">
-                <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">BID</button>
-                <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">ASK</button>
-                <button type="button" class="btn btn-secondary border-white border-top-0 border-bottom-0">LAST</button>
-                <button type="button" class="btn btn-success">EXECUTE</button>
-            </div>
-        </div>
-    </div-->
     <div class="container border mt-2">
         <table class="table">
             <thead>
@@ -49,7 +29,7 @@
                     <td>{{ order.professor }}</td>
                     <td>{{ order.price }}</td>
                     <td>
-                        <button type="button" class="btn btn-success btn-sm">EXECUTE</button>
+                        <button v-on:click="executeOrder(order.id)" type="button" class="btn btn-success btn-sm">EXECUTE</button>
                     </td>
                 </tr>
             </tbody>
@@ -116,7 +96,7 @@ export default {
       const path = 'http://localhost:5000/courses';
       axios.get(path)
         .then((res) => {
-          console.log(res.data.courses)
+          //console.log(res.data.courses)
           this.options = res.data.courses;
         })
         .catch((error) => {
@@ -170,6 +150,20 @@ export default {
       this.$refs.addOrderModal.hide();
       this.initForm();
     },
+    executeOrder(value) {
+        const path="http://localhost:5000/execute";
+        const payload = { order: value , user: this.user };
+        axios.put(path, payload)
+        .then((res) => {
+          console.log(res.data.message)
+
+          this.refresh();
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
     getUser() {
       const path = "http://localhost:5000/user";
       const payload = { user: "jjs2245" };
@@ -177,7 +171,7 @@ export default {
       .then((res) => {
         //console.log(res.data.user);
         this.user = res.data.user;
-        console.log(this.user)
+        //console.log(this.user)
         //console.log(this.user.credits);
       })
       .catch((error) => {
@@ -185,12 +179,16 @@ export default {
         console.error(error);
       });
     },
+    refresh() {
+        this.getUser();
+        this.getOrders();
+        this.getCourses();
+    }
   },
   created() {
-    //console.log(this.user);
-    this.getUser();
-    this.getOrders();
-    this.getCourses();
+      // refresh every 5 seconds
+    this.refresh();
+    this.interval = setInterval(() => this.refresh(), 5000);
   },
 };
 </script>
