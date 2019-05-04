@@ -74,5 +74,50 @@ def all_users():
         users += '<p>{}</p>'.format(user.uni)
     return '%s' % users
 
+'''
+User CRUD functions
+'''
+def create_user():
+    pass
+
+def update_user():
+    pass
+
+def view_user():
+    pass
+
+def delete_user():
+    pass
+
+'''
+Order CRUD functions
+'''
+def create_order():
+    pass
+
+def update_order():
+    pass
+
+def view_order():
+    pass
+
+def delete_order():
+    pass
+
+'''
+Course CRUD functions
+'''
+def create_course():
+    pass
+
+def update_course():
+    pass
+
+def view_course():
+    pass
+
+def delete_course():
+    pass
+
 if __name__ == '__main__':
     app.run()

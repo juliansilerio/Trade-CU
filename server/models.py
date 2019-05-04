@@ -6,6 +6,11 @@ class User(db.Model):
     uni = db.Column(db.String(10), unique=True, nullable=False, primary_key=True)
     #email = db.Column(db.String(120), unique=True, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
+    admin = db.Column(db.Boolean, nullable=True)
+
+    def is_admin(self):
+        return self.admin
+
     def __repr__(self):
         return '<User %r>' % self.uni
 
