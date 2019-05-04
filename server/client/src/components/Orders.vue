@@ -37,7 +37,7 @@
             </thead>
             <tbody>
                 <tr v-for="(order, index) in orders" :key="index">
-                    <td v-if="order.side=='B'" class="bg-info">
+                    <td v-if="order.side=='BUY'" class="bg-info">
                         <h6 class="text-center">BUY</h6>
                     </td>
                     <td v-else class="bg-warning">

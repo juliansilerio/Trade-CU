@@ -53,8 +53,10 @@ class Seat(db.Model):
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    seat_id = db.Column(db.Integer, db.ForeignKey('seat.id'))
-    seat = db.relationship('Seat', uselist=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.call'))
+    course = db.relationship('Course', uselist=False)
+    student_id = db.Column(db.String(10), db.ForeignKey('user.uni'),nullable=False)
+    student = db.relationship('User', backref=db.backref('orderscourse', lazy=True))
     price = db.Column(db.Integer, nullable=False)
     side = db.Column(db.String(4), nullable=False)
 

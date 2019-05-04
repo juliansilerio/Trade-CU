@@ -1,34 +1,34 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models import db
+from models import db, Order
 import generate_entities as ge
 
-ORDERS = [
-    {
-        'side' : 'B',
-        'ticker' : 'COMSW3134-001',
-        'class' : 'Data structures',
-        'time' : 'MW 8:10',
-        'professor' : 'Dunce',
-        'price' : '2',
-    },
-    {
-        'side' : 'S',
-        'ticker' : 'COMSW4491-002',
-        'class' : 'Machine learning for dummies',
-        'time' : 'TR 6:10',
-        'professor' : 'Beevis',
-        'price' : '1',
-    },
-    {
-        'side' : 'S',
-        'ticker' : 'COMSW4111-007',
-        'class' : 'Databases',
-        'time' : 'MWF 1:10',
-        'professor' : 'Oak',
-        'price' : '2',
-    }
-]
+# ORDERS = [
+#     {
+#         'side' : 'B',
+#         'ticker' : 'COMSW3134-001',
+#         'class' : 'Data structures',
+#         'time' : 'MW 8:10',
+#         'professor' : 'Dunce',
+#         'price' : '2',
+#     },
+#     {
+#         'side' : 'S',
+#         'ticker' : 'COMSW4491-002',
+#         'class' : 'Machine learning for dummies',
+#         'time' : 'TR 6:10',
+#         'professor' : 'Beevis',
+#         'price' : '1',
+#     },
+#     {
+#         'side' : 'S',
+#         'ticker' : 'COMSW4111-007',
+#         'class' : 'Databases',
+#         'time' : 'MWF 1:10',
+#         'professor' : 'Oak',
+#         'price' : '2',
+#     }
+# ]
 
 # configuration
 DEBUG = True
@@ -63,6 +63,17 @@ def all_orders():
         })
         response_object['message'] = 'Order created'
     else:
+        orders = Order.query.all()
+        ORDERS=[]
+        for o in orders:
+            ORDERS.append({
+                'side' : o.side,
+                'ticker' :  '{}{}-{}'.format(o.course.dept_short, o.course.number, str(o.course.section).zfill(3)),
+                'class' : str(o.course.title),
+                'time' : str(o.course.day) + " " +  str(o.course.time),
+                'professor' : o.course.faculty,
+                'price' : o.price
+            })
         response_object['orders'] = ORDERS
     return jsonify(response_object)
 
@@ -121,4 +132,3 @@ def delete_course():
 
 if __name__ == '__main__':
     app.run()
-    ge.main()
