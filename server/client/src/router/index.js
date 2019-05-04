@@ -3,6 +3,8 @@ import Router from 'vue-router';
 //import HelloWorld from '@/components/HelloWorld';
 import Ping from '@/components/Ping';
 import Orders from '@/components/Orders';
+import NotFound from '@/components/NotFound';
+import Login from '@/components/Login';
 
 Vue.use(Router);
 
@@ -10,7 +12,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Orders',
+      redirect: {
+        name: "login"
+      }
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login
+    },
+    {
+      path: '/secure',
+      name: 'secure',
       component: Orders,
     },
     {
@@ -18,6 +31,11 @@ export default new Router({
       name: 'Ping',
       component: Ping,
     },
+    // {
+    //   path: '*',
+    //   name: 'NotFound',
+    //   component: 'NotFound',
+    // },
   ],
   mode: 'history',
 });

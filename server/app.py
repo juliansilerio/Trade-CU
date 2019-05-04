@@ -1,34 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models import db, Order
+from flask_login import LoginManager
+from models import db, Order, User
 import generate_entities as ge
-
-# ORDERS = [
-#     {
-#         'side' : 'B',
-#         'ticker' : 'COMSW3134-001',
-#         'class' : 'Data structures',
-#         'time' : 'MW 8:10',
-#         'professor' : 'Dunce',
-#         'price' : '2',
-#     },
-#     {
-#         'side' : 'S',
-#         'ticker' : 'COMSW4491-002',
-#         'class' : 'Machine learning for dummies',
-#         'time' : 'TR 6:10',
-#         'professor' : 'Beevis',
-#         'price' : '1',
-#     },
-#     {
-#         'side' : 'S',
-#         'ticker' : 'COMSW4111-007',
-#         'class' : 'Databases',
-#         'time' : 'MWF 1:10',
-#         'professor' : 'Oak',
-#         'price' : '2',
-#     }
-# ]
 
 # configuration
 DEBUG = True
@@ -39,9 +13,15 @@ app.config.from_object(__name__)
 
 # enable CORS
 CORS(app)
+
+# db config
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db.app=app
 db.init_app(app)
+
+# login config
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
@@ -84,6 +64,15 @@ def all_users():
     for user in User.query.all():
         users += '<p>{}</p>'.format(user.uni)
     return '%s' % users
+
+@app.route('/check_user', methods=['POST'])
+def login():
+    response_object = { 'status' : 'success' }
+    post_data = request.get_json()
+    user = User.query.get(post_data.get('username'))
+    if user != None:
+        response_object['authenticated'] = 'true'
+    return jsonify(response_object)
 
 '''
 User CRUD functions
@@ -129,6 +118,11 @@ def view_course():
 
 def delete_course():
     pass
+
+@login_manager.user_loader
+def load_user(uni):
+    return User.query.get(uni)
+
 
 if __name__ == '__main__':
     app.run()
