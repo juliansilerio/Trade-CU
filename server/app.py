@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_login import LoginManager
-from models import db, Order, User
+from models import db, Order, User, Course
 import generate_entities as ge
 
 # configuration
@@ -28,11 +28,27 @@ login_manager.init_app(app)
 def ping_pong():
     return jsonify('pong!')
 
+@app.route('/courses', methods=['GET'])
+def all_courses():
+    response_object = {'status': 'success'}
+    courses = Course.query.all()
+    courses_res = []
+    courses_res.append({ 'value': 'null', 'text': 'Please select an option' })
+    for course in courses:
+        courses_res.append({ 'value': course.call, 'text': str(course)[1:-1]})
+    response_object['courses'] = courses_res
+    return jsonify(response_object)
+
 @app.route('/orders', methods=['GET', 'POST'])
 def all_orders():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
+        course = Course.query.get(post_data.get('course'))
+        student = User.query.get(post_data.get('user'))
+        order = Order(course=course, student=student, price=post_data.get('price'), side=post_data.get('side'))
+        db.session.add(order)
+        db.session.commit()
         response_object['message'] = 'Order created'
     else:
         orders = Order.query.all()

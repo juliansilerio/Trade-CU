@@ -1,10 +1,10 @@
 <template>
   <div class="container" id="app">
     <b-navbar id="nav" toggleable="lg" type="dark" variant="info">
-        <b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown v-if="authenticated" right>
           <!-- Using 'button-content' slot -->
-          <template slot="button-content"><em>{{ this.user.uni }}</em></template>
+          <template slot="button-content"><em>USER</em></template>
           <b-dropdown-item to="/login" v-on:click.native="logout()" replace>Sign Out</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -16,6 +16,7 @@
 <script>
 export default {
   name: 'App',
+  props: ['user'],
   data() {
     return {
       authentiated: false,

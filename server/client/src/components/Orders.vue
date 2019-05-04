@@ -60,26 +60,28 @@
              title="Add a new order"
              hide-footer>
       <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-      <b-form-group id="form-class-group"
-                    label="Class:"
-                    label-for="form-class-input">
-          <b-form-input id="form-class-input"
-                        type="text"
-                        v-model="addOrderForm.class"
-                        required
-                        placeholder="Enter class">
+        <b-form-group id="form-course-group"
+                    label="Course:"
+                    label-for="form-course-input">
+          <b-form-select id="form-course-input"
+                    v-model="addOrderForm.course"
+                    :options="this.options" required>
+            </b-form-select>
+        </b-form-group>
+        <b-form-group id="form-price-group"
+                      label="price:"
+                      label-for="form-price-input">
+          <b-form-input id="form-price-input"
+                          type="number"
+                          v-model="addOrderForm.price"
+                          required
+                          placeholder="Enter price">
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-professor-group"
-                      label="Professor:"
-                      label-for="form-professor-input">
-            <b-form-input id="form-professor-input"
-                          type="text"
-                          v-model="addOrderForm.professor"
-                          required
-                          placeholder="Enter professor">
-            </b-form-input>
-          </b-form-group>
+        <b-form-group label="BUY/SELL">
+          <b-form-radio v-model="addOrderForm.side" name="some-radios" value="BUY">BUY</b-form-radio>
+          <b-form-radio v-model="addOrderForm.side" name="some-radios" value="SELL">SELL</b-form-radio>
+        </b-form-group>
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
@@ -97,16 +99,31 @@ export default {
     return {
       orders: [],
       addOrderForm : {
-          class : '',
-          professor : '',
+          course : '',
+          price : '',
+          side : '',
+          user : '',
       },
       user: {
         uni : '',
         credits : 0,
       },
+      options : [],
     };
   },
   methods: {
+    getCourses() {
+      const path = 'http://localhost:5000/courses';
+      axios.get(path)
+        .then((res) => {
+          console.log(res.data.courses)
+          this.options = res.data.courses;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
     getOrders() {
       const path = 'http://localhost:5000/orders';
       axios.get(path)
@@ -131,15 +148,19 @@ export default {
         });
     },
     initForm() {
-      this.addOrderForm.class = '';
-      this.addOrderForm.professor = '';
+      this.addOrderForm.course = '';
+      this.addOrderForm.side = '';
+      this.addOrderForm.price = '';
+      this.addOrderForm.user = this.user.uni;
     },
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addOrderModal.hide();
       const payload = {
-        class: this.addOrderForm.class,
-        professor: this.addOrderForm.professor,
+          course : this.addOrderForm.course,
+          side: this.addOrderForm.side,
+          price: this.addOrderForm.price,
+          user: this.addOrderForm.user,
       };
       this.addOrder(payload);
       this.initForm();
@@ -152,11 +173,11 @@ export default {
     getUser() {
       const path = "http://localhost:5000/user";
       const payload = { user: "jjs2245" };
-      console.log(payload)
       axios.post(path, payload)
       .then((res) => {
         //console.log(res.data.user);
         this.user = res.data.user;
+        console.log(this.user)
         //console.log(this.user.credits);
       })
       .catch((error) => {
@@ -169,6 +190,7 @@ export default {
     //console.log(this.user);
     this.getUser();
     this.getOrders();
+    this.getCourses();
   },
 };
 </script>
