@@ -1,12 +1,14 @@
 <template>
-  <div class='container' id='login'>
+  <div>
+  <div class='container mb-2' id='login'>
     <h1><Login</h1>
     <input type='text' name='username' v-model='input.username' placeholder='Username' />
     <button class='btn btn-info' type='button' v-on:click='login()'>Login</button>
-    <!--p v-if='bad_login' id='warning'>
-    That didn't work, please try again.
-  </p-->
-</div>
+  </div>
+    <b-alert v-model='bad_login' variant='danger' dismissible>
+    {{ this.badLoginMsg }}
+    </b-alert>
+  </div>
 </template>
 
 <script>
@@ -16,6 +18,8 @@ export default {
   name : 'Login',
   data() {
     return {
+      bad_login:false,
+      badLoginMsg: '',
       input: {
         username: '',
       }
@@ -33,7 +37,8 @@ export default {
           if (response.data.authenticated) {
             this.$emit('status', response.data);
           } else {
-            console.log('Username not found');
+            this.badLoginMsg= 'Username not found';
+            this.bad_login = true;
           }
         })
         .catch(error => {
@@ -41,7 +46,8 @@ export default {
         });
 
       } else {
-        console.log('Username can\'t be empty');
+        this.badLoginMsg='Username can\'t be empty';
+        this.bad_login=true;
       }
     }
   }

@@ -1,8 +1,11 @@
 <template>
 <div class='container'>
+  <b-alert v-model="showBadOrderAlert" variant="danger" dismissible>
+     {{ badOrderMessage }}
+   </b-alert>
     <h1 class='text-center'>Trade@CU</h1>
-    <b-navbar id='nav' toggleable='lg' type='dark' variant='dark'>
 
+    <b-navbar id='nav' toggleable='lg' type='dark' variant='dark'>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id='nav-collapse' is-nav>
       <b-navbar-nav>
@@ -126,6 +129,8 @@ export default {
   props: ['user'],
   data() {
     return {
+      showBadOrderAlert: 0,
+      badOrderMessage: '',
       orders: [],
       myOrders: [],
       addOrderForm: {
@@ -170,8 +175,10 @@ export default {
     addOrder(payload) {
       const path = 'http://localhost:5000/addOrder';
       axios.post(path, payload)
-        .then(() => {
+        .then((res) => {
           this.getOrders();
+          this.showBadOrderAlert = !res.data.executed;
+          this.badOrderMessage = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -206,9 +213,11 @@ export default {
         const payload = { order: value , user: this.user };
         axios.put(path, payload)
         .then((res) => {
-          console.log(res.data.message)
-
+          console.log(res.data.message);
+          console.log(res.data);
           this.refresh();
+          this.showBadOrderAlert = !res.data.executed;
+          this.badOrderMessage = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -220,9 +229,9 @@ export default {
         const payload = { order: value , user: this.user };
         axios.put(path, payload)
         .then((res) => {
-          console.log(res.data.message)
-
           this.refresh();
+          this.showBadOrderAlert = !res.data.executed;
+          this.badOrderMessage = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -231,19 +240,16 @@ export default {
     },
     getUser() {
       const path = 'http://localhost:5000/user';
-      console.log(this.user);
-      console.log(this.props);
-      console.log(this.params);
+      // console.log(this.user);
+      // console.log(this.props);
+      // console.log(this.params);
       const payload = { user : this.user.uni };
       //const payload = { user : this.user };
       //console.log(this.data.user);
-      console.log(payload);
+      // console.log(payload);
       axios.post(path, payload)
       .then((res) => {
-        console.log(res.data.user);
         this.user = res.data.user;
-        console.log(this.user)
-        //console.log(this.user.credits);
       })
       .catch((error) => {
         // eslint-disable-next-line

@@ -46,11 +46,15 @@ def addOrder():
     course = Course.query.get(post_data.get('course'))
     student = User.query.get(post_data.get('user')['uni'])
     side=post_data.get('side')
+    response_object['executed'] = 0
+
     if (side == 'SELL' and Seat.query.filter_by(student=student,course=course).first()) or side == 'BUY':
         order = Order(course=course, student=student, price=post_data.get('price'), side=side)
         db.session.add(order)
         db.session.commit()
         response_object['message'] = 'Order created'
+
+        response_object['executed'] = 1
     else:
         response_object['message'] = 'Invalid order, no position in course'
 
@@ -96,6 +100,7 @@ def all_users():
 def execute():
     response_object = {'status': 'success'}
     response_object['message'] = 'Order failed to execute'
+    response_object['executed'] = 0
     put_data = request.get_json()
     o = Order.query.get(put_data.get('order'))
     user = User.query.get(put_data.get('user')['uni'])
@@ -118,6 +123,7 @@ def execute():
         db.session.add(seat)
         db.session.commit()
         response_object['message'] = 'Order executed'
+        response_object['executed'] = 1
     else:
         response_object['message'] +=' {} {} {} {} {}'.format(buyer, buyer.credits, o.price, seller.credits, seller)
     return jsonify(response_object)
@@ -129,12 +135,14 @@ def delete():
     put_data = request.get_json()
     o = Order.query.get(put_data.get('order'))
     user = User.query.get(put_data.get('user')['uni'])
+    response_object['executed'] = 0
 
 
     if o.student == user:
         Order.query.filter_by(id=put_data.get('order')).delete()
         db.session.commit()
         response_object['message'] = 'Order deleted'
+        response_object['executed'] = 1
     else:
         response_object['message'] +=' {} {} {} {}'.format(o.side, o.price, o.course, o.student)
     return jsonify(response_object)
