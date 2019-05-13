@@ -11,23 +11,21 @@ export default {
     return {
       authenticated: false,
       user: '',
-    }
+    };
   },
   mounted() {
-    if(!this.authenticated) {
-      this.$router.replace({ name:'login'});
+    if (!this.authenticated) {
+      this.$router.replace({ name: 'login' });
     }
   },
   methods: {
     setAuthenticated(status) {
-      if(status.authenticated) {
+      if (status.authenticated) {
         console.log(status);
         this.authenticated = status.authenticated;
         this.user = status.user;
         //console.log(status.user)
-        this.$router.replace({ name: 'secure',  params: {user: status.user }});
-      } else {
-        logout();
+        this.$router.replace({ name: 'secure', params: { user: status.user } });
       }
     },
     logout() {
@@ -35,7 +33,7 @@ export default {
       this.authenticated = false;
       this.user = '';
     },
-  }
+  },
 };
 </script>
 

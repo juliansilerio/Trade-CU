@@ -15,41 +15,40 @@
 import axios from 'axios';
 
 export default {
-  name : 'Login',
+  name: 'Login',
   data() {
     return {
-      bad_login:false,
+      bad_login: false,
       badLoginMsg: '',
       input: {
         username: '',
-      }
-    }
+      },
+    };
   },
   methods: {
     login() {
-      const path = 'http://localhost:5000/check_user'
-      if(this.input.username != '') {
+      const path = 'http://localhost:5000/check_user';
+      if (this.input.username !== '') {
         const payload = {
           username: this.input.username,
         };
         axios.post(path, payload)
-        .then(response => {
-          if (response.data.authenticated) {
-            this.$emit('status', response.data);
-          } else {
-            this.badLoginMsg= 'Username not found';
-            this.bad_login = true;
-          }
-        })
-        .catch(error => {
-          console.log(error)
-        });
-
+          .then((response) => {
+            if (response.data.authenticated) {
+              this.$emit('status', response.data);
+            } else {
+              this.badLoginMsg = 'Username not found';
+              this.bad_login = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
-        this.badLoginMsg='Username can\'t be empty';
-        this.bad_login=true;
+        this.badLoginMsg = 'Username can\'t be empty';
+        this.bad_login = true;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

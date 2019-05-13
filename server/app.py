@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
-from flask_login import LoginManager
 from models import db, Order, User, Course, Seat
 import generate_entities as ge
 
@@ -18,10 +17,6 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db.app=app
 db.init_app(app)
-
-# login config
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
@@ -234,9 +229,6 @@ def view_course():
 def delete_course():
     pass
 
-@login_manager.user_loader
-def load_user(uni):
-    return User.query.get(uni)
 
 
 if __name__ == '__main__':
