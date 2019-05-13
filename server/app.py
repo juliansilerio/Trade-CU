@@ -88,11 +88,11 @@ def execute():
     o = Order.query.get(put_data.get('order'))
     user = User.query.get(put_data.get('user')['uni'])
 
-    seller = o.student
-    buyer = user # you're executing the buy order
-    if o.side == 'SELL':
-        seller = user #you're executing the sell order
-        buyer = o.student
+    seller = o.student # order placer
+    buyer = user # you're executing their sell order
+    if o.side == 'BUY':
+        seller = user #you're executing their buy order
+        buyer = o.student # order placer
 
     seat = Seat.query.filter_by(student=seller,course=o.course).first()
     if seat and buyer.credits >= o.price and seller != buyer:
