@@ -1,7 +1,18 @@
 <template>
 <div class='container'>
     <h1 class='text-center'>Trade@CU</h1>
-    <button type='button' class='btn btn-success btn-sm' v-b-modal.order-modal>New Order</button>
+    <b-navbar id='nav' toggleable='lg' type='dark' variant='dark'>
+
+    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-collapse id='nav-collapse' is-nav>
+      <b-navbar-nav>
+        <b-navbar-brand>{{ this.user.uni }}</b-navbar-brand>
+        <b-nav-item>Credits: {{ this.user.credits }}</b-nav-item>
+        <button type='button' class='btn btn-success btn-sm' v-b-modal.order-modal>New Order</button>
+      </b-navbar-nav>
+    </b-collapse>
+      <button type='button' class='btn btn-light btn-sm' to='/login' v-on:click='logout()' right>Sign Out</button>
+    </b-navbar>
     <div class='container border mt-2'>
         <table class='table'>
             <thead>
@@ -29,7 +40,7 @@
                     <td>{{ order.professor }}</td>
                     <td>{{ order.price }}</td>
                     <td>
-                        <button v-on:click='executeOrder(order.id)' type='button' class='btn btn-success btn-sm'>EXECUTE</button>
+                      <button v-on:click='executeOrder(order.id)' type='button' class='btn btn-success btn-sm'>EXECUTE</button>
                     </td>
                 </tr>
             </tbody>
@@ -189,6 +200,13 @@ export default {
         this.getUser();
         this.getOrders();
         this.getCourses();
+    },
+    logout() {
+      console.log('logging out');
+
+      this.authenticated = false;
+      this.user = '';
+      this.$router.replace({name:'login'})
     }
   },
   created() {
