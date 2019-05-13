@@ -23,6 +23,9 @@ db.init_app(app)
 def ping_pong():
     return jsonify('pong!')
 
+'''
+COURSE FUNCTIONS
+'''
 @app.route('/courses', methods=['GET'])
 def all_courses():
     response_object = {'status': 'success'}
@@ -34,8 +37,31 @@ def all_courses():
     response_object['courses'] = courses_res
     return jsonify(response_object)
 
+'''
+SEAT FUNCTIONS
+'''
+@app.route('/mySeats', methods=['POST'])
+def my_seats():
+    response_object = { 'status': 'success' }
+    post_data = request.get_json()
+    student = User.query.get(post_data.get('user')['uni'])
+    classes_res = []
+    for c in student.classes:
+        c_res = {
+            'ticker' :  '{}{}-{}'.format(c.course.dept_short, c.course.number, str(c.course.section).zfill(3)),
+            'class' : str(c.course.title),
+            'time' : str(c.course.day) + " " +  str(c.course.time),
+            'professor' : c.course.faculty,
+        }
+        classes_res.append(c_res)
+    response_object['seats'] = classes_res
+    return jsonify(response_object)
+
+'''
+ORDER FUNCTIONS
+'''
 @app.route('/addOrder', methods=['POST'])
-def addOrder():
+def add_order():
     response_object = {'status': 'success'}
     post_data = request.get_json()
     course = Course.query.get(post_data.get('course'))
@@ -83,6 +109,23 @@ def get_orders():
 
     return jsonify(response_object)
 
+'''
+USER FUNCTIONS
+'''
+@app.route('/user', methods=['GET', 'POST'])
+def user():
+    response_object = { 'status' : 'success' }
+    post_data = request.get_json()
+    print(post_data)
+    user = User.query.get(post_data.get('user'))
+    USER_res = {
+        'uni': user.uni,
+        'credits' : user.credits
+    }
+    response_object['user'] = USER_res
+    print(USER_res)
+    return jsonify(response_object)
+
 @app.route('/users', methods=['GET'])
 def all_users():
     from models import User
@@ -91,6 +134,9 @@ def all_users():
         users += '<p>{}</p>'.format(user.uni)
     return '%s' % users
 
+'''
+ACTIONS
+'''
 @app.route('/execute', methods=['PUT'])
 def execute():
     response_object = {'status': 'success'}
@@ -164,20 +210,9 @@ def login():
         response_object['user'] = this_user
     return jsonify(response_object)
 
-@app.route('/user', methods=['GET', 'POST'])
-def user():
-    response_object = { 'status' : 'success' }
-    post_data = request.get_json()
-    print(post_data)
-    user = User.query.get(post_data.get('user'))
-    USER_res = {
-        'uni': user.uni,
-        'credits' : user.credits
-    }
-    response_object['user'] = USER_res
-    print(USER_res)
-    return jsonify(response_object)
-
+'''
+ADMIN VIEW
+'''
 @app.route('/see_orders')
 def see_orders():
     users = User.query.all()

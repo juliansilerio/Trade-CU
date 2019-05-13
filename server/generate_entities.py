@@ -46,15 +46,20 @@ def assign_seats():
     users = User.query.all()
     print(courses)
     print(users)
-    courses[0].seats[0].student = users[0]
-    courses[0].seats[1].student = users[2]
 
+    courses[0].seats[1].student = users[2]
+    courses[1].seats[1].student = users[2]
+    courses[2].seats[1].student = users[2]
+    courses[3].seats[1].student = users[2]
+    courses[4].seats[1].student = users[2]
+
+    courses[0].seats[0].student = users[0]
     courses[1].seats[0].student = users[0]
+    courses[4].seats[0].student = users[0]
 
     courses[2].seats[0].student = users[1]
-    courses[2].seats[1].student = users[2]
-
     courses[3].seats[0].student = users[1]
+
 
 def make_orders():
     users = User.query.all()
