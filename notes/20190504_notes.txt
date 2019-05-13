@@ -1,0 +1,15 @@
+to do
+    set up synchronized user login
+        currently just feeding my user into order
+    display user credits
+    distinguish your orders from user orders
+        your buy orders should look like sell orders to everyone else
+        your sell orders should look like buy orders to everyone else
+    set up delete order
+    set up change order
+    validation on sell orders
+
+done
+    set up EXECUTE order
+        needs to subtract from user credits
+    set up database polling

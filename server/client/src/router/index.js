@@ -13,18 +13,19 @@ export default new Router({
     {
       path: '/',
       redirect: {
-        name: "login"
+        name: 'login',
       }
     },
     {
-      path: "/login",
-      name: "login",
-      component: Login
+      path: '/login',
+      name: 'login',
+      component: Login,
     },
     {
       path: '/secure',
       name: 'secure',
       component: Orders,
+      props: true,
     },
     {
       path: '/ping',

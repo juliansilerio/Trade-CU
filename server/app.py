@@ -95,7 +95,7 @@ def execute():
         buyer = o.student
 
     seat = Seat.query.filter_by(student=seller,course=o.course).first()
-    if seat and buyer.credits >= o.price:
+    if seat and buyer.credits >= o.price and seller != buyer:
         buyer.credits -= o.price
         seller.credits += o.price
         seat.student = buyer
@@ -106,7 +106,8 @@ def execute():
         db.session.add(seat)
         db.session.commit()
         response_object['message'] = 'Order executed'
-
+    else:
+        response_object['message'] +=' {} {} {} {} {}'.format(buyer, buyer.credits, o.price, seller.credits, seller)
     return jsonify(response_object)
 
 
@@ -115,6 +116,7 @@ def login():
     response_object = { 'status' : 'success' }
     post_data = request.get_json()
     user = User.query.get(post_data.get('username'))
+    print(user)
     if user != None:
         response_object['authenticated'] = 'true'
         this_user = {
