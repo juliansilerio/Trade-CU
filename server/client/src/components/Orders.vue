@@ -132,7 +132,6 @@ export default {
       this.addOrderForm.course = '';
       this.addOrderForm.side = '';
       this.addOrderForm.price = '';
-      this.addOrderForm.user = this.user.uni;
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -141,7 +140,7 @@ export default {
           course : this.addOrderForm.course,
           side: this.addOrderForm.side,
           price: this.addOrderForm.price,
-          user: this.addOrderForm.user,
+          user: this.user.uni,
       };
       this.addOrder(payload);
       this.initForm();

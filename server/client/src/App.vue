@@ -1,12 +1,12 @@
 <template>
   <div class='container' id='app'>
-    <b-navbar id='nav' toggleable='lg' type='dark' variant='info'>
-        <b-navbar-nav class='ml-auto'>
-        <b-nav-item-dropdown v-if='authenticated' right>
-          <!-- Using 'button-content' slot -->
-          <template slot='button-content'><em>{{ this.user.uni }}</em></template>
-          <b-dropdown-item to='/login' v-on:click.native='logout()' replace>Sign Out</b-dropdown-item>
-        </b-nav-item-dropdown>
+    <b-navbar v-if='authenticated'  id='nav' toggleable='lg' type='dark' variant='dark'>
+
+
+        <b-navbar-nav >
+          <b-nav-text right>{{ this.user.credits }}</b-nav-text>
+          <b-nav-text right><em>{{ this.user.uni }}</em></b-nav-text>
+          <b-nav-item to='/login' v-on:click.native='logout()' replace>Sign Out</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     <router-view @status='setAuthenticated' />

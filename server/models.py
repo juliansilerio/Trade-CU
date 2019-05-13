@@ -56,9 +56,9 @@ class Order(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('course.call'))
     course = db.relationship('Course', uselist=False)
     student_id = db.Column(db.String(10), db.ForeignKey('user.uni'),nullable=False)
-    student = db.relationship('User', backref=db.backref('orderscourse', lazy=True))
+    student = db.relationship('User', backref=db.backref('orders', lazy=True))
     price = db.Column(db.Integer, nullable=False)
     side = db.Column(db.String(4), nullable=False)
 
     def __repr__(self):
-        return '<Order %r>' % self.id
+        return '<{} {} {}>'.format(self.side, self.price, self.course)

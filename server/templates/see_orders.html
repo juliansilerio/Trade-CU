@@ -1,0 +1,28 @@
+
+
+{% for user in users %}
+<h1>{{ user.uni }} {{ user.credits }}</h1>
+<table>
+<tr>
+  <th>
+    Orders
+  </th>
+  {% for order in user.orders %}
+  <th>
+    {{ order }}
+  </th>
+  {% endfor %}
+</tr>
+<tr>
+  <th>
+    Classes
+  </th>
+  {% for seat in user.classes %}
+  <th>
+    {{ seat }}
+  </th>
+  {% endfor %} 
+</tr>
+</table>
+<br />
+{% endfor %}

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from flask_login import LoginManager
 from models import db, Order, User, Course, Seat
@@ -139,6 +139,12 @@ def user():
     response_object['user'] = USER_res
     print(USER_res)
     return jsonify(response_object)
+
+@app.route('/see_orders')
+def see_orders():
+    users = User.query.all()
+    print([user.orders for user in users])
+    return render_template('see_orders.html', users=users)
 
 '''
 User CRUD functions
