@@ -2,6 +2,8 @@
 ---
 Simple trading system for students to exchange seats in classes.
 
+[Google doc report](https://docs.google.com/document/d/1eglDL3isIZbns6VVgnVU5SzrdW2o0c2UGNnf0SQcqDI/edit?usp=sharing)
+
 ### Requirements
 * Node.js (I used 8.10.0)
 * npm  (I used 6.9.0)
