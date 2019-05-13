@@ -39,37 +39,49 @@ def all_courses():
     response_object['courses'] = courses_res
     return jsonify(response_object)
 
-@app.route('/orders', methods=['GET', 'POST'])
-def all_orders():
+@app.route('/addOrder', methods=['POST'])
+def addOrder():
     response_object = {'status': 'success'}
-    if request.method == 'POST':
-        post_data = request.get_json()
-        course = Course.query.get(post_data.get('course'))
-        student = User.query.get(post_data.get('user'))
-        side=post_data.get('side')
-        if (side == 'SELL' and Seat.query.filter_by(student=student,course=course).first()) or side == 'BUY':
-            order = Order(course=course, student=student, price=post_data.get('price'), side=side)
-            db.session.add(order)
-            db.session.commit()
-            response_object['message'] = 'Order created'
-        else:
-            response_object['message'] = 'Invalid order, no position in course'
-
-        print(response_object['message'])
+    post_data = request.get_json()
+    course = Course.query.get(post_data.get('course'))
+    student = User.query.get(post_data.get('user')['uni'])
+    side=post_data.get('side')
+    if (side == 'SELL' and Seat.query.filter_by(student=student,course=course).first()) or side == 'BUY':
+        order = Order(course=course, student=student, price=post_data.get('price'), side=side)
+        db.session.add(order)
+        db.session.commit()
+        response_object['message'] = 'Order created'
     else:
-        orders = Order.query.all()
-        ORDERS=[]
-        for o in orders:
-            ORDERS.append({
-                'side' : o.side,
-                'ticker' :  '{}{}-{}'.format(o.course.dept_short, o.course.number, str(o.course.section).zfill(3)),
-                'class' : str(o.course.title),
-                'time' : str(o.course.day) + " " +  str(o.course.time),
-                'professor' : o.course.faculty,
-                'price' : o.price,
-                'id' : o.id,
-            })
-        response_object['orders'] = ORDERS
+        response_object['message'] = 'Invalid order, no position in course'
+
+    print(response_object['message'])
+    return jsonify(response_object)
+
+@app.route('/getOrders', methods=['POST'])
+def get_orders():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    student = User.query.get(post_data.get('user')['uni'])
+    orders = Order.query.all()
+    ORDERS= []
+    myORDERS = []
+    for o in orders:
+        res_o = {
+            'side' : o.side,
+            'ticker' :  '{}{}-{}'.format(o.course.dept_short, o.course.number, str(o.course.section).zfill(3)),
+            'class' : str(o.course.title),
+            'time' : str(o.course.day) + " " +  str(o.course.time),
+            'professor' : o.course.faculty,
+            'price' : o.price,
+            'id' : o.id,
+        }
+        if o.student == student:
+            myORDERS.append(res_o)
+        else:
+            ORDERS.append(res_o)
+    response_object['orders'] = ORDERS
+    response_object['myOrders'] = myORDERS
+
     return jsonify(response_object)
 
 @app.route('/users', methods=['GET'])
@@ -108,6 +120,23 @@ def execute():
         response_object['message'] = 'Order executed'
     else:
         response_object['message'] +=' {} {} {} {} {}'.format(buyer, buyer.credits, o.price, seller.credits, seller)
+    return jsonify(response_object)
+
+@app.route('/delete', methods=['PUT'])
+def delete():
+    response_object = {'status': 'success'}
+    response_object['message'] = 'Order could not be deleted '
+    put_data = request.get_json()
+    o = Order.query.get(put_data.get('order'))
+    user = User.query.get(put_data.get('user')['uni'])
+
+
+    if o.student == user:
+        Order.query.filter_by(id=put_data.get('order')).delete()
+        db.session.commit()
+        response_object['message'] = 'Order deleted'
+    else:
+        response_object['message'] +=' {} {} {} {}'.format(o.side, o.price, o.course, o.student)
     return jsonify(response_object)
 
 

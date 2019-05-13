@@ -14,37 +14,74 @@
       <button type='button' class='btn btn-light btn-sm' to='/login' v-on:click='logout()' right>Sign Out</button>
     </b-navbar>
     <div class='container border mt-2'>
-        <table class='table'>
+      <b-tabs pills variant='info' type='info'>
+        <b-tab title="My orders">
+          <table class='table'>
             <thead>
-                <tr>
-                    <th style='width: 5%'>SIDE</th>
-                    <th style='width: 20%'>TICKER</th>
-                    <th>CLASS</th>
-                    <th style='width: 10%'>TIME</th>
-                    <th style='width: 10%'>PROFESSOR</th>
-                    <th style='width: 10%'>PRICE</th>
-                    <th>ACTIONS</th>
-                </tr>
+              <tr>
+                <th style='width: 5%'>SIDE</th>
+                <th style='width: 20%'>TICKER</th>
+                <th>CLASS</th>
+                <th style='width: 10%'>TIME</th>
+                <th style='width: 10%'>PROFESSOR</th>
+                <th style='width: 10%'>PRICE</th>
+                <th>ACTIONS</th>
+              </tr>
             </thead>
             <tbody>
-                <tr v-for='(order, index) in orders' :key='index'>
-                    <td v-if='order.side=="BUY"' class='bg-info'>
-                        <h6 class='text-center'>BUY</h6>
-                    </td>
-                    <td v-else class='bg-warning'>
-                        <h6 class='text-center'>SELL</h6>
-                    </td>
-                    <td>{{ order.ticker }}</td>
-                    <td>{{ order.class }}</td>
-                    <td>{{ order.time }}</td>
-                    <td>{{ order.professor }}</td>
-                    <td>{{ order.price }}</td>
-                    <td>
-                      <button v-on:click='executeOrder(order.id)' type='button' class='btn btn-success btn-sm'>EXECUTE</button>
-                    </td>
-                </tr>
+              <tr v-for='(order, index) in myOrders' :key='index'>
+                <td v-if='order.side=="BUY"' class='bg-info'>
+                  <h6 class='text-center'>BUY</h6>
+                </td>
+                <td v-else class='bg-warning'>
+                  <h6 class='text-center'>SELL</h6>
+                </td>
+                <td>{{ order.ticker }}</td>
+                <td>{{ order.class }}</td>
+                <td>{{ order.time }}</td>
+                <td>{{ order.professor }}</td>
+                <td>{{ order.price }}</td>
+                <td>
+                  <button v-on:click='deleteOrder(order.id)' type='button' class='btn btn-danger btn-sm'>DELETE</button>
+                </td>
+              </tr>
             </tbody>
-        </table>
+          </table>
+        </b-tab>
+        <b-tab title="Everyone else's orders">
+          <table class='table'>
+            <thead>
+              <tr>
+                <th style='width: 5%'>SIDE</th>
+                <th style='width: 20%'>TICKER</th>
+                <th>CLASS</th>
+                <th style='width: 10%'>TIME</th>
+                <th style='width: 10%'>PROFESSOR</th>
+                <th style='width: 10%'>PRICE</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for='(order, index) in orders' :key='index'>
+                <td v-if='order.side=="BUY"' class='bg-info'>
+                    <h6 class='text-center'>BUY</h6>
+                </td>
+                <td v-else class='bg-warning'>
+                    <h6 class='text-center'>SELL</h6>
+                </td>
+                <td>{{ order.ticker }}</td>
+                <td>{{ order.class }}</td>
+                <td>{{ order.time }}</td>
+                <td>{{ order.professor }}</td>
+                <td>{{ order.price }}</td>
+                <td>
+                  <button v-on:click='executeOrder(order.id)' type='button' class='btn btn-success btn-sm'>EXECUTE</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </b-tab>
+      </b-tabs>
     </div>
     <b-modal ref='addOrderModal'
              id='order-modal'
@@ -90,6 +127,7 @@ export default {
   data() {
     return {
       orders: [],
+      myOrders: [],
       addOrderForm: {
           course: '',
           price: '',
@@ -117,10 +155,12 @@ export default {
         });
     },
     getOrders() {
-      const path = 'http://localhost:5000/orders';
-      axios.get(path)
+      const path = 'http://localhost:5000/getOrders';
+      const payload = { user: this.user}
+      axios.post(path, payload)
         .then((res) => {
           this.orders = res.data.orders;
+          this.myOrders = res.data.myOrders;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -128,7 +168,7 @@ export default {
         });
     },
     addOrder(payload) {
-      const path = 'http://localhost:5000/orders';
+      const path = 'http://localhost:5000/addOrder';
       axios.post(path, payload)
         .then(() => {
           this.getOrders();
@@ -151,7 +191,7 @@ export default {
           course : this.addOrderForm.course,
           side: this.addOrderForm.side,
           price: this.addOrderForm.price,
-          user: this.user.uni,
+          user: this.user,
       };
       this.addOrder(payload);
       this.initForm();
@@ -163,6 +203,20 @@ export default {
     },
     executeOrder(value) {
         const path='http://localhost:5000/execute';
+        const payload = { order: value , user: this.user };
+        axios.put(path, payload)
+        .then((res) => {
+          console.log(res.data.message)
+
+          this.refresh();
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+    deleteOrder(value) {
+        const path='http://localhost:5000/delete';
         const payload = { order: value , user: this.user };
         axios.put(path, payload)
         .then((res) => {
