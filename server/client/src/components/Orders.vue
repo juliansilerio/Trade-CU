@@ -1,7 +1,10 @@
 <template>
 <div class='container'>
   <b-alert v-model="showBadOrderAlert" variant="danger" dismissible>
-     {{ badOrderMessage }}
+     {{ orderMessage }}
+   </b-alert>
+   <b-alert v-model="showGoodAlert" variant="success" dismissible>
+     {{ orderMessage }}
    </b-alert>
     <h1 class='text-center'>Trade@CU</h1>
 
@@ -130,7 +133,8 @@ export default {
   data() {
     return {
       showBadOrderAlert: 0,
-      badOrderMessage: '',
+      showGoodAlert: 0,
+      orderMessage: '',
       orders: [],
       myOrders: [],
       addOrderForm: {
@@ -178,7 +182,8 @@ export default {
         .then((res) => {
           this.getOrders();
           this.showBadOrderAlert = !res.data.executed;
-          this.badOrderMessage = res.data.message;
+          this.showGoodAlert = res.data.executed;
+          this.orderMessage = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -217,7 +222,8 @@ export default {
           console.log(res.data);
           this.refresh();
           this.showBadOrderAlert = !res.data.executed;
-          this.badOrderMessage = res.data.message;
+          this.showGoodAlert = res.data.executed;
+          this.orderMessage = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -231,7 +237,8 @@ export default {
         .then((res) => {
           this.refresh();
           this.showBadOrderAlert = !res.data.executed;
-          this.badOrderMessage = res.data.message;
+          this.showGoodAlert = res.data.executed;
+          this.orderMessage = res.data.message;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -272,7 +279,7 @@ export default {
   created() {
       // refresh every 5 seconds
     this.refresh();
-    //this.interval = setInterval(() => this.refresh(), 5000);
+    this.interval = setInterval(() => this.refresh(), 5000);
     // console.log('test print 1');
     // console.log(this.$parent);
     // console.log(user);

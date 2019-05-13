@@ -56,7 +56,7 @@ def addOrder():
 
         response_object['executed'] = 1
     else:
-        response_object['message'] = 'Invalid order, no position in course'
+        response_object['message'] = 'Invalid order: no position in course'
 
     print(response_object['message'])
     return jsonify(response_object)
@@ -99,7 +99,7 @@ def all_users():
 @app.route('/execute', methods=['PUT'])
 def execute():
     response_object = {'status': 'success'}
-    response_object['message'] = 'Order failed to execute'
+    response_object['message'] = 'Invalid order: '
     response_object['executed'] = 0
     put_data = request.get_json()
     o = Order.query.get(put_data.get('order'))
@@ -112,20 +112,26 @@ def execute():
         buyer = o.student # order placer
 
     seat = Seat.query.filter_by(student=seller,course=o.course).first()
-    if seat and buyer.credits >= o.price and seller != buyer:
-        buyer.credits -= o.price
-        seller.credits += o.price
-        seat.student = buyer
+    if seat:
+        if buyer.credits >= o.price:
+            if seller != buyer:
+                buyer.credits -= o.price
+                seller.credits += o.price
+                seat.student = buyer
 
-        Order.query.filter_by(id=put_data.get('order')).delete()
-        db.session.add(buyer)
-        db.session.add(seller)
-        db.session.add(seat)
-        db.session.commit()
-        response_object['message'] = 'Order executed'
-        response_object['executed'] = 1
+                Order.query.filter_by(id=put_data.get('order')).delete()
+                db.session.add(buyer)
+                db.session.add(seller)
+                db.session.add(seat)
+                db.session.commit()
+                response_object['message'] = 'Order executed'
+                response_object['executed'] = 1
+            else:
+                response_object['message'] += ' buyer cannot be seller!'
+        else:
+            response_object['message'] += ' {} does not have enough credits ({}) for price ({})'.format(buyer, buyer.credits, o.price)
     else:
-        response_object['message'] +=' {} {} {} {} {}'.format(buyer, buyer.credits, o.price, seller.credits, seller)
+        response_object['message'] += ' seat in {} by {} not found'.format(o.course, seller)
     return jsonify(response_object)
 
 @app.route('/delete', methods=['PUT'])
